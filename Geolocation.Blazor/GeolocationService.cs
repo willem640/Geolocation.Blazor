@@ -6,19 +6,39 @@ using System.Linq;
 
 namespace Geolocation.Blazor
 {
+    /// <summary>
+    /// The main entry point of the API
+    /// </summary>
     public class GeolocationService : IGeolocationService
     {
+        /// <inheritdoc/>
         public event EventHandler<PositionChangedEventArgs> PositionChanged;
+
+        /// <inheritdoc/>
         public event EventHandler<PositionErrorEventArgs> PositionError;
 
         private readonly IJSRuntime jsRuntime;
         private readonly Dictionary<long, List<IDisposable>> disposablesByWatchId = new Dictionary<long, List<IDisposable>>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GeolocationService"/> class, and requests objects through dependency injection
+        /// </summary>
+        /// <param name="jSRuntime">An <see cref="IJSRuntime"/> object</param>
         public GeolocationService(IJSRuntime jSRuntime)
         {
             jsRuntime = jSRuntime;
         }
 
+        /// <summary>
+        /// Destructs the object and disposes of remaining <see cref="IDisposable"/>s
+        /// </summary>
+        ~GeolocationService()
+        {
+            foreach (var disposables in disposablesByWatchId)
+                disposables.Value.ForEach(val => val.Dispose());
+        }
+
+        /// <inheritdoc/>
         public async Task<GeolocationPosition> GetCurrentPositionAsync(PositionOptions options = null)
         {
             var tcs = new TaskCompletionSource<Tuple<GeolocationPosition, GeolocationPositionError>>();
@@ -38,6 +58,7 @@ namespace Geolocation.Blazor
             }
         }
 
+        /// <inheritdoc/>
         public async Task GetCurrentPositionAsync(Action<GeolocationPosition> success, Action<GeolocationPositionError> error = null, PositionOptions options = null)
         {
 
@@ -53,12 +74,14 @@ namespace Geolocation.Blazor
             await jsRuntime.InvokeVoidAsync("GeolocationBlazor.GetCurrentPosition", successRef, errorRef, options);
         }
 
+        /// <inheritdoc/>
         public Task AttachEvents()
         {
             return WatchPositionAsync(pos => OnPositionChanged(new PositionChangedEventArgs { Position = pos }),
                                       err => OnPositionError(new PositionErrorEventArgs { Error = err }));
         }
 
+        /// <inheritdoc/>
         public Task ClearWatchAsync(long id)
         {
             disposablesByWatchId.Remove(id, out var disposables);
@@ -67,6 +90,7 @@ namespace Geolocation.Blazor
             return jsRuntime.InvokeVoidAsync("navigator.geolocation.clearWatch", id).AsTask();
         }
 
+        /// <inheritdoc/>
         public async Task<long> WatchPositionAsync(Action<GeolocationPosition> success, Action<GeolocationPositionError> error = null, PositionOptions options = null)
         {
             var successJsAction = new JSAction<GeolocationPosition>(success);
@@ -83,17 +107,27 @@ namespace Geolocation.Blazor
 
             return id;
         }
-
+        /// <summary>
+        /// A method that is when <see cref="PositionChanged"/> should fire
+        /// </summary>
+        /// <param name="eventArgs">A <see cref="PositionChangedEventArgs"/> object representing the event arguments</param>
         protected void OnPositionChanged(PositionChangedEventArgs eventArgs)
         {
             PositionChanged?.Invoke(this, eventArgs);
         }
 
+        /// <summary>
+        /// A method that is when <see cref="PositionError"/> should fire
+        /// </summary>
+        /// <param name="eventArgs">A <see cref="PositionErrorEventArgs"/> object representing the event arguments</param>
         protected void OnPositionError(PositionErrorEventArgs eventArgs)
         {
             PositionError?.Invoke(this, eventArgs);
         }
 
+        /// <summary>
+        /// Creates a JavaScript object with helper methods
+        /// </summary>
         protected ValueTask InjectJSHelper()
             => jsRuntime.InvokeVoidAsync("eval",// class instance to POJO conversion (ClassToObject) is neccesary, otherwise serialisation does not work
                 @"var GeolocationBlazor = {
