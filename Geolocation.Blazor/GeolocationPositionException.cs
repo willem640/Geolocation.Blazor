@@ -8,6 +8,11 @@ namespace Geolocation.Blazor
     /// </summary>
     public class GeolocationPositionException : Exception
     {
+        public GeolocationPositionException(GeolocationPositionError error) : base(error.Message)
+        {
+            Code = error.Code;
+        }
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GeolocationPositionException"/> class

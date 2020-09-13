@@ -20,7 +20,7 @@ namespace Geolocation.Blazor
         [JSInvokable]
         public void Invoke(T arg)
         {
-            Action.Invoke(arg);
+            Action?.Invoke(arg);
         }
 
         public static implicit operator JSAction<T>(Action<T> action)

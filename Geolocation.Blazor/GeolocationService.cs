@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
-using System.Linq;
 
 namespace Geolocation.Blazor
 {
@@ -26,7 +25,7 @@ namespace Geolocation.Blazor
         /// <param name="jSRuntime">An <see cref="IJSRuntime"/> object</param>
         public GeolocationService(IJSRuntime jSRuntime)
         {
-            jsRuntime = jSRuntime;
+            jsRuntime = jSRuntime ?? throw new ArgumentNullException(nameof(jSRuntime));
         }
 
         /// <summary>
@@ -34,35 +33,26 @@ namespace Geolocation.Blazor
         /// </summary>
         ~GeolocationService()
         {
-            foreach (var disposables in disposablesByWatchId)
-                disposables.Value.ForEach(val => val.Dispose());
+            foreach (var (_, value) in disposablesByWatchId)
+                value.ForEach(val => val.Dispose());
         }
 
         /// <inheritdoc/>
+        /// <exception cref="GeolocationPositionException">Thrown when an error is encountered in the browser API</exception>
         public async Task<GeolocationPosition> GetCurrentPositionAsync(PositionOptions options = null)
         {
-            var tcs = new TaskCompletionSource<Tuple<GeolocationPosition, GeolocationPositionError>>();
+            var tcs = new TaskCompletionSource<GeolocationPosition>();
 
-            await GetCurrentPositionAsync((GeolocationPosition pos) => tcs.SetResult(new Tuple<GeolocationPosition, GeolocationPositionError>(pos, null)),
-                                          (GeolocationPositionError err) => tcs.SetResult(new Tuple<GeolocationPosition, GeolocationPositionError>(null, err)),
+            await GetCurrentPositionAsync((GeolocationPosition pos) => tcs.SetResult(pos),
+                                          (GeolocationPositionError err) => tcs.SetException(new GeolocationPositionException(err)),
                                           options);
 
-            var (position, error) = await tcs.Task;
-            if (!(position is null) && error is null)
-            {
-                return position;
-            }
-            else
-            {
-                throw new GeolocationPositionException(error.Message) { Code = error.Code };
-            }
+            return await tcs.Task;
         }
 
         /// <inheritdoc/>
         public async Task GetCurrentPositionAsync(Action<GeolocationPosition> success, Action<GeolocationPositionError> error = null, PositionOptions options = null)
         {
-
-
             var successJsAction = new JSAction<GeolocationPosition>(success);
             var errorJsAction = new JSAction<GeolocationPositionError>(error);
 
@@ -85,7 +75,7 @@ namespace Geolocation.Blazor
         public Task ClearWatchAsync(long id)
         {
             disposablesByWatchId.Remove(id, out var disposables);
-            disposables.ForEach(disposable => disposable.Dispose());
+            disposables?.ForEach(disposable => disposable.Dispose());
 
             return jsRuntime.InvokeVoidAsync("navigator.geolocation.clearWatch", id).AsTask();
         }
@@ -108,7 +98,7 @@ namespace Geolocation.Blazor
             return id;
         }
         /// <summary>
-        /// A method that is when <see cref="PositionChanged"/> should fire
+        /// A protected method that is called when <see cref="PositionChanged"/> should fire
         /// </summary>
         /// <param name="eventArgs">A <see cref="PositionChangedEventArgs"/> object representing the event arguments</param>
         protected void OnPositionChanged(PositionChangedEventArgs eventArgs)
@@ -117,7 +107,7 @@ namespace Geolocation.Blazor
         }
 
         /// <summary>
-        /// A method that is when <see cref="PositionError"/> should fire
+        /// A protected method that is called when <see cref="PositionError"/> should fire
         /// </summary>
         /// <param name="eventArgs">A <see cref="PositionErrorEventArgs"/> object representing the event arguments</param>
         protected void OnPositionError(PositionErrorEventArgs eventArgs)

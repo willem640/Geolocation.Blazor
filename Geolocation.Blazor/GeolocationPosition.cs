@@ -26,7 +26,7 @@ namespace Geolocation.Blazor
         /// <returns>A string that represents a <see cref="GeolocationCoordinates"/> object</returns>
         public override string ToString()
         {
-            return Coords.ToString();
+            return Coords?.ToString() ?? new GeolocationCoordinates().ToString();
         }
     }
 }

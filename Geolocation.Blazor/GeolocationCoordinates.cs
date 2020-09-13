@@ -62,7 +62,7 @@ namespace Geolocation.Blazor
         /// </summary>
         /// <returns>A string with a latitude and longitude</returns>
         public override string ToString()
-        {
+        { 
             return $"{Latitude:f} {Longitude:f}";
         }
     }

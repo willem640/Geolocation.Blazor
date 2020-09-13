@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geolocation.Blazor", "Geolocation.Blazor\Geolocation.Blazor.csproj", "{7FB76A0F-5ECB-4F59-B79B-E44E4CB93AD9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geolocation.Blazor", "Geolocation.Blazor\Geolocation.Blazor.csproj", "{6CFEB3D5-FEAF-4A9B-8F8F-845616D89774}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,9 +9,9 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7FB76A0F-5ECB-4F59-B79B-E44E4CB93AD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7FB76A0F-5ECB-4F59-B79B-E44E4CB93AD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7FB76A0F-5ECB-4F59-B79B-E44E4CB93AD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7FB76A0F-5ECB-4F59-B79B-E44E4CB93AD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CFEB3D5-FEAF-4A9B-8F8F-845616D89774}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CFEB3D5-FEAF-4A9B-8F8F-845616D89774}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CFEB3D5-FEAF-4A9B-8F8F-845616D89774}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CFEB3D5-FEAF-4A9B-8F8F-845616D89774}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

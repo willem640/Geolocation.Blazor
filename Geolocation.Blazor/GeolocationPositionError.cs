@@ -45,7 +45,7 @@ namespace Geolocation.Blazor
         /// <returns>A human-readable string</returns>
         public override string ToString()
         {
-            return Message; 
+            return Message ?? ""; 
         }
     }
 }
