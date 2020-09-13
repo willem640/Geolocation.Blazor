@@ -3,6 +3,8 @@ A small Blazor library for interacting with the JavaScript Geolocation API.
 
 It's made to be (nearly) exactly like the navigator.geolocation API, and additionally offer C# events (PositionChanged, PositionError), and an extra method (GetCurrentPositionAsync(PositionOptions)) that gets the location without having to provide a delegate.
 
+Notes:
+* GeolocationService MUST be Transient
 
 Not (yet) on NuGet, but you can easily add it as a project reference, or just compile it and reference the dlls.
 
@@ -81,7 +83,7 @@ namespace Example
             builder.RootComponents.Add<App>("app");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-            builder.Services.AddSingleton<IGeolocationService, GeolocationService>();
+            builder.Services.AddTransient<IGeolocationService, GeolocationService>();
 
             await builder.Build().RunAsync();
         }
