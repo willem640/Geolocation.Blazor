@@ -6,7 +6,7 @@ It's made to be (nearly) exactly like the navigator.geolocation API, and additio
 Notes:
 * GeolocationService MUST be Transient
 
-Not (yet) on NuGet, but you can easily add it as a project reference, or just compile it and reference the dlls.
+If you like the project, it's available on nuget :).
 
 Example:
 
