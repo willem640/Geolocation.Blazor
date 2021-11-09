@@ -3,10 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>Geolocation.Blazor_Willem640</PackageId>
-    <Authors>Willem640</Authors>
-    <Copyright>2020 Willem640</Copyright>
-    <Owners>Willem640</Owners>
+    <Version>1.0.0</Version>
+    <Authors>willem640</Authors>
+    <Copyright>2021 willem640</Copyright>
+    <Owners>willem640</Owners>
     <Description>A small Blazor library for interacting with the Geolocation API</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
